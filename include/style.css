@@ -7,9 +7,12 @@ body {
 
 .header {
     width: 800px;
-    margin: 20px auto;
+    margin: 20px auto 0;
     padding: 17px;
     background-color: #f8f8f8;
+
+    font-size: 44px;
+    text-align: center;
 }
 
 .footer {
