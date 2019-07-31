@@ -40,6 +40,7 @@ code {
     line-height: 16px;
     font-family: 'Ubuntu Mono', monospace;
     color: #222222;
+    display: block;
 }
 
 code.python::before {
