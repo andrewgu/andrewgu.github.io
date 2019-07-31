@@ -8,12 +8,14 @@ body {
 .header {
     width: 800px;
     margin: 20px auto;
+    padding: 13px;
     background-color: #f8f8f8;
 }
 
 .footer {
     color: #222222;
     margin: 0 auto;
+    padding: 13px;
     width: 800px;
 }
 
@@ -26,9 +28,8 @@ body {
 
 code {
     border: 1px solid #888888;
-    padding: 8px;
-    margin-left: -8px;
-    margin-right: -8px;
+    padding: 8px 20px;
+    box-sizing: border-box;
     width: 100%;
     background-color: #eeeeee;
     font-size: 12px;
