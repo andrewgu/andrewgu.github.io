@@ -8,19 +8,20 @@ body {
 .header {
     width: 800px;
     margin: 20px auto;
-    padding: 13px;
+    padding: 17px;
     background-color: #f8f8f8;
 }
 
 .footer {
     color: #222222;
     margin: 0 auto;
-    padding: 13px;
+    padding: 17px;
     width: 800px;
 }
 
 .content-root {
     margin: 20px auto;
+    padding: 17px;
     width: 800px;
     color: #222222;
     background-color: #f8f8f8;
