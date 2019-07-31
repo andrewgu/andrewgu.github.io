@@ -13,8 +13,54 @@
             <h1>Title H1</h1>
             <h2>Section H2</h2>
             <h3>Subheading H3</h3>
-            <p>Body text</p>
-            <code>This is code</code>
+            <p>Body text <a href="https://fidoalliance.org/specifications/">Reference Link</a></p>
+            <code class="python">This is python code</code>
+            <code class="javascript">This is javascript code</code>
+            <code class="json">{inline json stuff}</code>
+            <code class="hex">01 23 45 67 89 0A BC DE F0</code>
+            <code class="base64">ThisIsWebSafeBase64</code>
+
+            <div class="protocol-phase" id="test_expandable">
+                <div class="protocol-phase-header">
+                    <input class="protocol-phase-expand-button" type="checkbox" value="Explain" expandtarget="test_expandable"></div>
+                    <div class="protocol-phase-title">Name of Protocol Phase</div>
+                </div>
+                <div class="protocol-phase-detail">
+                    Detail of Protocol Phase
+
+                    <p>Explanation stuff here.</p>
+
+                    <div class="data" id="test_data">
+                        <input class="data-toggle" type="checkbox" value="Annotate" expandtarget="test_data">
+                        <div class="data-collapsed">
+                            <code class="json">{Collapsed Json}</code>
+                        </div>
+                        <div class="data-expanded">
+                            <code class="json">00 00 00 00</code>
+                            <p>Description</p>
+                            <code class="json">00 00 00 00</code>
+                            <p>Description</p>
+                            <code class="json">00 00 00 00</code>
+                            <p>Description</p>
+                        </div>
+                    </div>
+
+                    <div class="blob" id="test_blob">
+                        <input class="blob-toggle" type="checkbox" value="Decode" expandtarget="test_blob">
+                        <div class="blob-base64">
+                            <code class="base64">Base 64</code>
+                        </div>
+                        <div class="blob-hex">
+                            <code class="hex">00 00 00 00</code>
+                        </div>
+                    </div>
+
+                    <div class="show-code" id="test_showcode">
+                        <input class="show-code-expand-button" type="button" value="Code" expandtarget="test_showcode">
+                        <code class="detail-code python">Detail code</code>
+                    </div>
+                </div>
+            </div>
         </div>
         <div class="footer">
             &copy; 2019 Andrew Gu | MIT License
@@ -23,9 +69,8 @@
     <script type="text/javascript" src="/include/util.js"></script>
     <script type="text/javascript">
         var formatMapping = {
-            "expand_toggle": "expand_toggle",
-            "expandable" : "expandable",
             "expander_attrb" : "expandtarget",
+            "expand_css_class" : "expanded"
         };
         initInteractiveFormatting(formatMapping);
     </script>

@@ -36,8 +36,35 @@ code {
     box-sizing: border-box;
     width: 100%;
     background-color: #eeeeee;
-    font-size: 12px;
+    font-size: 14px;
     line-height: 16px;
     font-family: 'Ubuntu Mono', monospace;
     color: #222222;
+}
+
+code.python::before {
+    content: "# Python 3<br>"
+}
+
+code.javascript::before {
+    content: "// JavaScript<br>"
+}
+
+code.json {
+}
+
+code.hex::before {
+    content: "Binary Blob:<br>"
+}
+
+code.base64::before {
+    content: "WebSafe Base64:<br>"
+}
+
+div.small-toggle {
+
+}
+
+div.small-toggle {
+    
 }
