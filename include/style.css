@@ -1,0 +1,24 @@
+body {
+    margin: 0;
+    padding: 0;
+    background-color: #eeeeee;
+}
+
+.content-root {
+    color: #222222;
+    font-family: 'Open Sans', sans-serif;
+    background-color: #f8f8f8;
+}
+
+.code {
+    border: 1px solid #888888;
+    padding: 8px;
+    margin-left: -8px;
+    margin-right: -8px;
+    width: 100%;
+    background-color: #eeeeee;
+    font-size: 12px;
+    line-height: 16px;
+    font-family: 'Ubuntu Mono', monospace;
+    color: #222222;
+}
