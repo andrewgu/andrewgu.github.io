@@ -2,11 +2,11 @@
 <html>
     <head>
         <link href="https://fonts.googleapis.com/css?family=Open+Sans|Ubuntu+Mono&display=swap" rel="stylesheet">
-        <link rel="stylesheet" type="text/css" href="/include/style.css">
+        <link rel="stylesheet" type="text/css" href="./include/style.css">
         <title>Andrew Gu - FIDO/U2F in detail</title>
     </head>
     <body>
-        <div class="header">
+        <div class="page-header">
             FIDO/U2F Protocol Annotated
         </div>
         <div class="content-root">
@@ -20,57 +20,70 @@
             <code class="hex">01 23 45 67 89 0A BC DE F0</code>
             <code class="base64">ThisIsWebSafeBase64</code>
 
-            <div class="protocol-phase" id="test_expandable">
-                <div class="protocol-phase-header">
-                    <input class="protocol-phase-expand-button" type="checkbox" value="Explain" expandtarget="test_expandable"></div>
-                    <div class="protocol-phase-title">Name of Protocol Phase</div>
-                </div>
-                <div class="protocol-phase-detail">
-                    Detail of Protocol Phase
-
-                    <p>Explanation stuff here.</p>
-
-                    <div class="data" id="test_data">
-                        <input class="data-toggle" type="checkbox" value="Annotate" expandtarget="test_data">
-                        <div class="data-collapsed">
-                            <code class="json">{Collapsed Json}</code>
-                        </div>
-                        <div class="data-expanded">
-                            <code class="json">00 00 00 00</code>
-                            <p>Description</p>
-                            <code class="json">00 00 00 00</code>
-                            <p>Description</p>
-                            <code class="json">00 00 00 00</code>
-                            <p>Description</p>
-                        </div>
+            <div class="protocol-phase expandable" id="test_expandable">
+                <div class="expandable-inner">
+                    <div class="protocol-phase-header header">
+                        <input class="protocol-phase-toggle" type="button" value="Explain" expandtarget="test_expandable">
+                        <div class="protocol-phase-previewer">Name of Protocol Phase</div>
                     </div>
+                    <div class="protocol-phase-detail detail">
+                        <h1>Detail of Protocol Phase</h1>
 
-                    <div class="blob" id="test_blob">
-                        <input class="blob-toggle" type="checkbox" value="Decode" expandtarget="test_blob">
-                        <div class="blob-base64">
-                            <code class="base64">Base 64</code>
+                        <p>Explanation stuff here.</p>
+                        <!--
+                        <div class="data expandable" id="test_data">
+                            <div class="data-header header" previewer>
+                                <input class="data-toggle" type="button" value="Annotate" expandtarget="test_data">
+                                <div class="data-previewer" preview>
+                                    <code class="json">{Collapsed Json}</code>
+                                </div>
+                            </div>
+                            <div class="data-expanded">
+                                <code class="json">00 00 00 00</code>
+                                <p>Description</p>
+                                <code class="json">00 00 00 00</code>
+                                <p>Description</p>
+                                <code class="json">00 00 00 00</code>
+                                <p>Description</p>
+                            </div>
                         </div>
-                        <div class="blob-hex">
-                            <code class="hex">00 00 00 00</code>
-                        </div>
-                    </div>
 
-                    <div class="show-code" id="test_showcode">
-                        <input class="show-code-expand-button" type="checkbox" value="Code" expandtarget="test_showcode">
-                        <code class="detail-code python">Detail code</code>
+                        <div class="blob expandable" id="test_blob">
+                            <div class="blob-header header" previewer>
+                                <input class="blob-toggle" type="button" value="Decode" expandtarget="test_blob">
+                                <div class="blob-previewer">
+                                    <code class="base64">Base 64</code>
+                                </div>
+                            </div>
+                            <div class="blob-expanded">
+                                <code class="hex">00 00 00 00</code>
+                            </div>
+                        </div>
+
+                        <div class="show-code expandable" id="test_showcode">
+                            <div class="show-code-header header">
+                                <input class="show-code-expand-button" type="button" value="Code" expandtarget="test_showcode" previewer>
+                            </div>
+                            <code class="show-code-expanded python">Detail code</code>
+                        </div>
+                        -->
                     </div>
                 </div>
             </div>
         </div>
-        <div class="footer">
+        <div class="page-footer">
             &copy; 2019 Andrew Gu | MIT License
         </div>
     </body>
-    <script type="text/javascript" src="/include/util.js"></script>
+    <script type="text/javascript" src="./include/util.js"></script>
     <script type="text/javascript">
         var formatMapping = {
             "expander_attrb" : "expandtarget",
-            "expand_css_class" : "expanded"
+            "collapse_css_class" : "collapsed",
+            "expand_state_attrb" : "expanded",
+            "previewer_attrb" : "previewer",
+            "expand_target_size_attrb" : "expandedsize",
+            "shrink_target_size_attrb" : "collapsedsize"
         };
         initInteractiveFormatting(formatMapping);
     </script>
