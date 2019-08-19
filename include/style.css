@@ -153,12 +153,16 @@ div.tooltip-text::after {
 /* Formatting for protocol phase container */
 .protocol-phase {
     padding-top: 10px;
-    padding-bottom: 10px;
+    padding-bottom: 0px;
     padding-left: 17px;
     padding-right: 17px;
     border-radius: 7px;
     margin-top: 10px;
     margin-bottom: 10px;
+}
+
+.protocol-phase.collapsed {
+    padding-bottom: 10px;
 }
 
 .protocol-phase > h1.phase-name {

@@ -135,18 +135,19 @@
                             </div>
                         </div>
                     </div>
-
-                    It's crucial that the server generates a <em>random</em> string so that it's not possible 
-                    for an eavesdropper to replay a previous registration.
-
-                    The server needs to remember that this challenge is for the specific user.
+                    <p>
+                        It's crucial that the server generates a <em>random</em> string so that it's not possible 
+                        for an eavesdropper to replay a previous registration.
+    
+                        The server needs to remember that this challenge is for the specific user.
+                    </p>
                 </div>
             </div>
             <div class="protocol-phase client-phase" expandable>
                 <h1 class="phase-name" expandtoggle>
                     <span class="expand">+</span>
                     <span class="shrink">−</span>
-                    &#x1f5a2; User Prompt
+                    <!--&#x1f5a2;-->User Prompt
                 </h1>
                 <div class="details with-tabs">
                     <div class="tab">
@@ -169,11 +170,35 @@
                 <h1 class="phase-name" expandtoggle>
                     <span class="expand">+</span>
                     <span class="shrink">−</span>
-                    &#x21c9; Client Response
+                    &#x21c9; Signed Response
                 </h1>
                 <div class="details">
                     <p>
                         Client sends response with protocol bullshit
+                    </p>
+                </div>
+            </div>
+            <div class="protocol-phase server-phase" expandable>
+                <h1 class="phase-name" expandtoggle>
+                    <span class="expand">+</span>
+                    <span class="shrink">−</span>
+                    Validate Response
+                </h1>
+                <div class="details">
+                    <p>
+                        Server stores registration info
+                    </p>
+                </div>
+            </div>
+            <div class="protocol-phase server-phase" expandable>
+                <h1 class="phase-name" expandtoggle>
+                    <span class="expand">+</span>
+                    <span class="shrink">−</span>
+                    Save Registration
+                </h1>
+                <div class="details">
+                    <p>
+                        Server stores registration info
                     </p>
                 </div>
             </div>
