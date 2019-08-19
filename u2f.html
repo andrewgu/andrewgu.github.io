@@ -8,6 +8,175 @@
     <body>
         <div class="page-header">
             FIDO/U2F Protocol Annotated
+            <span class="subtitle">Inspired by <a target="_blank" href="https://tls13.ulfheim.net/">The Illustrated TLS Connection</a></span>
+            <h1>Why write this?</h1>
+            <p>
+                When I was writing FIDO/U2F multi-factor authentication for my own project, I couldn't find any good tutorials.
+            </p>
+            <p>    
+                In typical unsatisfying tutorial fashion (I'm talking to you, unnamed Medium tutorials), 
+                every one regurgitated the browser-side JavaScript calls for prompting the user and said nothing
+                about the remaining 95% of the details. 
+                What do my servers need to do? What do these JSON objects 
+                actually mean? How do I actually verify the user?
+            </p>
+            <p>
+                This is my attempt at a <em>useful</em> tutorial.
+            </p>
+            <h1>What isn't covered?</h1>
+            <p>
+                This is for FIDO version 1, aka U2F. FIDO2 follows the same principles but works slightly differently.
+            </p>
+            <h1 class="phase-name">
+                Prerequisites
+            </h1>
+            <p>
+                The demo code requires <a target="_blank" href="https://www.python.org/">Python 3</a> and the <a target="_blank" href="https://github.com/Yubico/python-fido2">fido2</a> package:
+                <code>&gt; pip install fido2</code>
+            </o>
+            <p>
+                JavaScript parts can be run in your browser's dev console.
+            </p>
+        </div>
+        <div class="content-root">
+            <h1>Registration</h1>
+            <div class="protocol-phase client-phase" expandable>
+                <h1 class="phase-name" expandtoggle>
+                    <span class="expand">+</span>
+                    <span class="shrink">−</span>
+                    &#x2b92; Connect with HTTPS
+                </h1>
+                <div class="details">
+                    <p>
+                        The client (or browser) first makes a HTTPS connection with the server. 
+                        This is to prevent a man-in-the-middle attack which would allow
+                        an attacker to impersonate either the server (replay attack) or the FIDO authenticator.
+                    </p>
+                    <p>
+                        If you are writing a website, you get this for free with your standard HTTPS everywhere setup.
+                        If you are writing a native client, make sure you are using HTTPS to talk to your servers.
+                    </p>
+                </div>
+            </div>
+            <div class="protocol-phase client-phase" expandable>
+                <h1 class="phase-name" expandtoggle>
+                    <span class="expand">+</span>
+                    <span class="shrink">−</span>
+                    &#x2b92; User Login
+                </h1>
+                <div class="details">
+                    <p>
+                        You need some way to connect data in the registration process to the user's account. Typically, you do this
+                        by having the user log in. If they haven't enabled 2FA/MFA yet, then it's usually just username + password until
+                        2FA/MFA is set up.
+                    </p>
+                    <p>
+                        If you are requiring 2FA/MFA, then you might restrict the user account like an "unverified" account until the
+                        FIDO authenticator is set up.
+                    </p>
+                </div>
+            </div>
+            <div class="protocol-phase server-phase" expandable>
+                <h1 class="phase-name" expandtoggle>
+                    <span class="expand">+</span>
+                    <span class="shrink">−</span>
+                    &#x21c7; Server Challenge
+                </h1>
+                <div class="details">
+                    <p>
+                        Registration begins with the server generating a random challenge string.
+                        The challenge string will be signed using a private key stored on the FIDO authenticator.
+                    </p>
+                    <div class="code-paragraph" expandable>
+                        <div class="code">
+                            4b2fe77263b28031b396140f8460863fe80b88ebb974a9e6a1069ca4040bf547
+                        </div>
+                        <input type="button" value="Show Code" expandtoggle>
+                        <div class="details">
+                            <div class="code">
+                                # python<br>
+                                from binascii import hexlify<br>
+                                from secrets import token_bytes<br>
+                                <span class="has-tooltip">
+                                    CHALLENGE_LENGTH = 32
+                                    <div class="tooltip-text" style="width: 350px; padding-top: 5px;">32 bytes is probably enough, requiring 2<sup>128</sup> guesses for a birthday attack.</div>
+                                </span>
+                                <br>
+                                challenge = token_bytes(CHALLENGE_LENGTH)<br>
+                                print(hexlify(challenge))
+                            </div>
+                        </div>
+                    </div>
+                    <p>
+                        For transmitting the challenge, we will need to encode it using <a target="_blank" href="https://en.wikipedia.org/wiki/Base64#Implementations_and_history">base64url without padding</a>:
+                    </p>
+                    <div class="code-paragraph" expandable>
+                        <div class="code">
+                            Sy_ncmOygDGzlhQPhGCGP-gLiOu5dKnmoQacpAQL9Uc
+                        </div>
+                        <input type="button" value="Show Code" expandtoggle>
+                        <div class="details">
+                            <p>
+                                Convert into base64url without padding:
+                            </p>
+                            <div class="code">
+                                # python<br>
+                                from fido2.utils import websafe_encode<br>
+                                websafe_encode(challenge)
+                            </div>
+                            <p>
+                                Or you can generate the challenge straight into base64url:
+                            </p>
+                            <div class="code">
+                                # python<br>
+                                from secrets import token_urlsafe<br>
+                                CHALLENGE_LENGTH = 32
+                                challenge = token_urlsafe(CHALLENGE_LENGTH).replace('=','')<br>
+                            </div>
+                        </div>
+                    </div>
+
+                    It's crucial that the server generates a <em>random</em> string so that it's not possible 
+                    for an eavesdropper to replay a previous registration.
+
+                    The server needs to remember that this challenge is for the specific user.
+                </div>
+            </div>
+            <div class="protocol-phase client-phase" expandable>
+                <h1 class="phase-name" expandtoggle>
+                    <span class="expand">+</span>
+                    <span class="shrink">−</span>
+                    &#x1f5a2; User Prompt
+                </h1>
+                <div class="details with-tabs">
+                    <div class="tab">
+                        <input id="client-phase-webauthn-tab" type="radio" name="reg-prompt-user-nav" checked>
+                        <label for="client-phase-webauthn-tab">Browser (WebAuthn)</label>
+                        <div class="tab-content">
+                            WebAuthn details
+                        </div>
+                    </div>
+                    <div class="tab">
+                        <input id="client-phase-python-tab" type="radio" name="reg-prompt-user-nav">
+                        <label for="client-phase-python-tab">Native (Python)</label>
+                        <div class="tab-content">
+                            Python details
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="protocol-phase client-phase" expandable>
+                <h1 class="phase-name" expandtoggle>
+                    <span class="expand">+</span>
+                    <span class="shrink">−</span>
+                    &#x21c9; Client Response
+                </h1>
+                <div class="details">
+                    <p>
+                        Client sends response with protocol bullshit
+                    </p>
+                </div>
+            </div>
         </div>
         <div class="content-root">
             <h1>Title H1</h1>
@@ -78,12 +247,10 @@
     <script type="text/javascript" src="./include/util.js"></script>
     <script type="text/javascript">
         var formatMapping = {
-            "expander_attrb" : "expandtarget",
-            "collapse_css_class" : "collapsed",
-            "expand_state_attrb" : "expanded",
-            "previewer_attrb" : "previewer",
-            "expand_target_size_attrb" : "expandedsize",
-            "shrink_target_size_attrb" : "collapsedsize"
+            "expandable_attrb" : "expandable",
+            "toggle_attrb" : "expandtoggle",
+            "collapse_class" : "collapsed",
+            "toggle_state_attrb": "togglecollapsed",
         };
         initInteractiveFormatting(formatMapping);
     </script>

@@ -1,7 +1,7 @@
 body {
     margin: 0;
     padding: 0;
-    background-color: #eeeeee;
+    background-color: #f3f3f3;
     font-family: 'Open Sans', sans-serif;
 }
 
@@ -10,14 +10,48 @@ h1, h2, h3, h4, h5, h6
     font-family: 'Open Sans', sans-serif;
 }
 
+h1
+{
+    font-size: 28px;
+}
+
+.page-header > .subtitle
+{
+    font-size: 16px;
+    text-align: center;
+    display: block;
+}
+
+p, div.details > div.paragraph, div.code-paragraph {
+    font-size: 16px;
+    text-align: left;
+    margin-top: 16px;
+    margin-bottom: 16px;
+}
+
+sup {
+    margin: 0;
+    padding: 0;
+    font-size: 10px;
+}
+
+p em, div.paragraph em {
+    margin-left: -1.5px;
+    margin-right: 1.5px;
+}
+
 .page-header {
     width: 800px;
     margin: 20px auto 0;
     padding: 17px;
-    background-color: #f8f8f8;
+    /*background-color: #f8f8f8;*/
 
     font-size: 44px;
     text-align: center;
+}
+
+.page-header p {
+    font-size: 16px;
 }
 
 .page-footer {
@@ -28,14 +62,16 @@ h1, h2, h3, h4, h5, h6
 }
 
 .content-root {
-    margin: 20px auto;
+    margin: 0 auto;
     padding: 17px;
     width: 800px;
     color: #222222;
-    background-color: #f8f8f8;
+    /*background-color: #f8f8f8;*/
 }
 
-code {
+/* Code block formatting */
+
+code, div.code {
     margin: 8px 0;
     border: 1px solid #888888;
     padding: 8px 20px;
@@ -49,53 +85,169 @@ code {
     display: block;
 }
 
-code.python::before {
-    content: "# Python 3<br>"
+div.code > input[expandtoggle] {
+    float: right;
+    margin-top: -3px;
+    height: 22px;
 }
 
-code.javascript::before {
-    content: "// JavaScript<br>"
+div.code-paragraph > div.details {
+    margin-left: 30px;
+    margin-right: 30px;
 }
 
-code.hex::before {
-    content: "Binary Blob:<br>"
-}
+/* Tooltip formatting */
+div.tooltip-text {
+    position: absolute;
 
-code.base64::before {
-    content: "WebSafe Base64:<br>"
-}
+    top: 100%;
+    left: 20px;
+    margin-top: 5px;
 
-.expandable {
-    transition-delay: 0s;
-    transition-duration: 0.5s;
-    transition-property: height;
+    padding: 8px;
+
+    font-family: 'Open Sans', sans-serif;
+    line-height: 16px;
+    font-size: 16px;
+    text-align: left;
+    box-sizing: border-box;
+    border-radius: 5px;
+    background-color: rgb(70, 70, 70);
+    color: white;
+
+    z-index: 100;
+    display: block;
+    opacity: 0.0;
+
+    pointer-events: none;
+
+    transition-property: opacity;
+    transition-duration: 0.2s;
     transition-timing-function: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
 
+.has-tooltip:hover > div.tooltip-text {
+    opacity: 1.0;
+}
+
+.has-tooltip {
+    position: relative;
+}
+
+.code > .has-tooltip {
+    color: #222288;
+    text-decoration: underline;
+}
+
+div.tooltip-text::after {
+    content: " ";
+    position: absolute;
+    top: 0%; /* At the bottom of the tooltip */
+    left: 20px;
+    margin-top: -10px;
+    border-width: 5px;
+    border-style: solid;
+    border-color:  transparent transparent rgb(70, 70, 70) transparent;
+}
+
+/* Formatting for protocol phase container */
+.protocol-phase {
+    padding-top: 10px;
+    padding-bottom: 10px;
+    padding-left: 17px;
+    padding-right: 17px;
+    border-radius: 7px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.protocol-phase > h1.phase-name {
+    margin: 0;
+    padding: 0;
+    line-height: 36px;
+}
+
+.protocol-phase.collapsed > h1.phase-name > span.expand {
+    display: block;
+}
+
+.protocol-phase > h1.phase-name > span.expand {
+    display: none;
+}
+
+.protocol-phase.collapsed > h1.phase-name > span.shrink {
+    display: none;
+}
+
+.protocol-phase > h1.phase-name > span.shrink {
+    display: block;
+}
+
+.protocol-phase > h1.phase-name > span.expand, h1.phase-name span.shrink {
+    float: right;
+    width: 20px;
+    height: 20px;
+    line-height:20px;
+    font-size: 20px;
+    margin-top: 7px;
+    margin-right: 0px;
+    text-align: center;
+    border: 1px solid #a0a0a0;
+    color: #888888;
+}
+
+.protocol-phase > .details {
     overflow: hidden;
 }
 
-.expandable-inner {
-    width: 100%;
-    overflow: visible;
-    border: none;
-    margin: 0;
-    padding: 0;
+.client-phase {
+    background-color: #d7f5d7;
+    border: 1px solid #a9dba9;
+}
 
+.client-phase.collapsed:hover{
+    border: 1px solid #459645;
+}
+
+.server-phase {
+    background-color: #dbecff;
+    border: 1px solid #99c9ff;
+}
+
+.server-phase.collapsed:hover {
+    border: 1px solid #4a6e96;
+}
+
+/* For handling toggle expansion */
+.expandable {
+    overflow: hidden;
+}
+
+[expandtoggle] {
+    cursor: pointer;
+}
+
+.short {
+    transition-property: opacity;
+    transition-duration: 0.2s;
+    transition-timing-function: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    height: 0;
+    opacity: 0;
+}
+
+div.collapsed > .short {
+    transition-property: opacity;
+    transition-duration: 0.2s;
+    transition-timing-function: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    height: auto;
+    opacity: 1;
+}
+
+.details
+{
     display: block;
 }
 
-.collapsed {
-    height: 15px;
-}
-
-.expandable-inner > .header {
-    display: block;
-    width: 100%;
-    margin: 0;
-}
-
-.expandable-inner > .detail {
-    display: block;
-    width: 100%;
-    margin: 0;
+div.collapsed > .details {
+    display: none;
 }

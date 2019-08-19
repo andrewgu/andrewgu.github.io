@@ -10,15 +10,15 @@ function updateExpandState(targetNode, collapserClass, expanded)
     }
 }
 
-function flipExpandState(element, attrbName)
+function flipExpandState(element, toggleStateAttrb)
 {
-    var state = getExpandState(element, attrbName);
-    element.setAttribute(attrbName, state ? "false" : "true");
+    var state = getExpandState(element, toggleStateAttrb);
+    element.setAttribute(toggleStateAttrb, state ? "false" : "true");
 }
 
-function getExpandState(element, attrbName)
+function getExpandState(element, toggleStateAttrb)
 {
-    var attrbValue = element.getAttribute(attrbName);
+    var attrbValue = element.getAttribute(toggleStateAttrb);
     if (attrbValue === null || attrbValue === "false")
     {
         return false;
@@ -33,24 +33,41 @@ function getExpandState(element, attrbName)
     }
 }
 
+function findParentExpandable(element, attrbName)
+{
+    for (var elem = element.parentElement; elem !== null; elem = elem.parentElement)
+    {
+        if (elem.getAttribute(attrbName) !== null)
+        {
+            return elem;
+        }
+    }
+
+    return null;
+}
+
 function initInteractiveFormatting(formatMapping)
 {
     // Use "collapse" CSS class as the modified setting so that no-JS fails to open
-    var collapserClass = formatMapping["collapse_css_class"];
-    var expanderAttrbString = formatMapping["expander_attrb"];
-    var expandStateAttrb = formatMapping["expand_state_attrb"];
+    var collapserClass = formatMapping["collapse_class"];
+    var toggleAttrbString = formatMapping["toggle_attrb"];
+    var toggleStateAttrb = formatMapping["toggle_state_attrb"];
+    var expandableElemAttrb = formatMapping["expandable_attrb"];
 
-    var expanderElements = document.querySelectorAll("input[" + expanderAttrbString + "]");
+    var expanderElements = document.querySelectorAll("[" + toggleAttrbString + "]");
     expanderElements.forEach(function(element, index)
     {
-        var targetElemId = element.getAttribute(expanderAttrbString);
-        // Register handler
-        element.onclick = function() {
-            flipExpandState(element, expandStateAttrb);
-            updateExpandState(document.querySelector("#" + targetElemId), collapserClass, getExpandState(element, expandStateAttrb));
-            
+        var targetElem = findParentExpandable(element, expandableElemAttrb);
+        if (targetElem !== null)
+        {
+            // Register handler
+            element.onclick = function() {
+                flipExpandState(targetElem, toggleStateAttrb);
+                updateExpandState(targetElem, collapserClass, getExpandState(targetElem, toggleStateAttrb));
+                
+            }
+            // Update current state
+            updateExpandState(targetElem, collapserClass, getExpandState(targetElem, toggleStateAttrb));
         }
-        // Update current state
-        updateExpandState(document.querySelector("#" + targetElemId), collapserClass, getExpandState(element, expandStateAttrb));
     });
 }
