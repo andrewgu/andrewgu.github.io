@@ -15,6 +15,11 @@ h1
     font-size: 28px;
 }
 
+h2
+{
+    font-size: 18px;
+}
+
 .page-header > .subtitle
 {
     font-size: 16px;
@@ -67,6 +72,63 @@ p em, div.paragraph em {
     width: 800px;
     color: #222222;
     /*background-color: #f8f8f8;*/
+}
+
+/* Tabbed div */
+div.details[tabcontainer]
+{
+    width: 100%;
+    border: 1px solid rgba(160, 160, 160, 0.7);
+    margin-top: 16px;
+    margin-bottom: 16px;
+    border-radius: 3px;
+}
+
+div.details[tabcontainer] > div.tab-selector
+{
+    display: flex;
+    flex-direction: row;
+}
+
+div.details[tabcontainer] > div.tab-selector > input
+{
+    display: none;
+}
+
+div.details[tabcontainer] > div.tab-selector > label
+{
+    margin-right: 3px;
+    padding: 5px;
+    flex-basis: auto;
+    flex-shrink: 0;
+    flex-grow: 0;
+
+    border-bottom: 3px solid rgba(0,0,0,0.1);
+
+    cursor: pointer;
+}
+
+div.details[tabcontainer] > div.tab-selector > label:hover
+{
+    background-color: rgba(160,160,160,0.3);
+    border-bottom: 3px solid rgba(0,0,0,0.5);
+}
+
+div.details[tabcontainer] > div.tab-selector > input:checked + label
+{
+    background-color: rgba(160,160,160,0.3);
+    border-bottom: 3px solid rgba(0,0,0,0.5);
+}
+
+div.details[tabcontainer] > div.tab-content
+{
+    display: none;
+    margin: 16px;
+}
+
+div.details[tabcontainer] > div.tab-content.visible
+{
+    display: block;
 }
 
 /* Code block formatting */

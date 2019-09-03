@@ -83,9 +83,12 @@
                     &#x21c7; Server Challenge
                 </h1>
                 <div class="details">
+                    <h2>
+                        Generating a Secure Challenge
+                    </h2>
                     <p>
-                        Registration begins with the server generating a random challenge string.
-                        The challenge string will be signed using a private key stored on the FIDO authenticator.
+                        Registration begins with the server generating a random challenge (binary blob).
+                        The challenge will be signed using a private key stored on the FIDO authenticator.
                     </p>
                     <div class="code-paragraph" expandable>
                         <div class="code">
@@ -106,9 +109,19 @@
                                 print(hexlify(challenge))
                             </div>
                         </div>
+                        <p>
+                            It's crucial that the server generates a <em>random</em> challenge so that it's not possible 
+                            for an eavesdropper to replay a previous registration.
+        
+                            The server needs to remember that this challenge is for this specific user.
+                        </p>
                     </div>
+                    <h2>
+                        Transmitting to Client
+                    </h2>
                     <p>
-                        For transmitting the challenge, we will need to encode it using <a target="_blank" href="https://en.wikipedia.org/wiki/Base64#Implementations_and_history">base64url without padding</a>:
+                        Before we can send the challenge to the actual FIDO authenticator, we will need to encode it using <a target="_blank" href="https://en.wikipedia.org/wiki/Base64#Implementations_and_history">base64url without padding</a>.
+                        Technically we don't have to do the base 64 encoding until the next step (client talking to the FIDO authenticator), but base64 is convenient for returning a binary blob in a HTTP response body, so we might as well encode it on the server.
                     </p>
                     <div class="code-paragraph" expandable>
                         <div class="code">
@@ -125,7 +138,7 @@
                                 websafe_encode(challenge)
                             </div>
                             <p>
-                                Or you can generate the challenge straight into base64url:
+                                You could generate the challenge straight into base64url, but remember that you will have to verify the response using the <em>decoded</em> bit sequence.
                             </p>
                             <div class="code">
                                 # python<br>
@@ -135,12 +148,6 @@
                             </div>
                         </div>
                     </div>
-                    <p>
-                        It's crucial that the server generates a <em>random</em> string so that it's not possible 
-                        for an eavesdropper to replay a previous registration.
-    
-                        The server needs to remember that this challenge is for the specific user.
-                    </p>
                 </div>
             </div>
             <div class="protocol-phase client-phase" expandable>
@@ -149,20 +156,24 @@
                     <span class="shrink">−</span>
                     <!--&#x1f5a2;-->User Prompt
                 </h1>
-                <div class="details with-tabs">
-                    <div class="tab">
+                <div class="details" tabcontainer>
+                    <div class="tab-selector">
                         <input id="client-phase-webauthn-tab" type="radio" name="reg-prompt-user-nav" checked>
-                        <label for="client-phase-webauthn-tab">Browser (WebAuthn)</label>
-                        <div class="tab-content">
-                            WebAuthn details
-                        </div>
-                    </div>
-                    <div class="tab">
+                        <label for="client-phase-webauthn-tab">Browser</label>
                         <input id="client-phase-python-tab" type="radio" name="reg-prompt-user-nav">
-                        <label for="client-phase-python-tab">Native (Python)</label>
-                        <div class="tab-content">
-                            Python details
-                        </div>
+                        <label for="client-phase-python-tab">Native</label>
+                        &nbsp;
+                    </div>
+                    <div class="tab-content" fortab="client-phase-webauthn-tab">
+                        <h2>
+                            Prompting with WebAuthn in the Browser
+                        </h2>
+                        
+                    </div>
+                    <div class="tab-content" fortab="client-phase-python-tab">
+                        <h2>
+                            Prompting from a Native Application (using Python)
+                        </h2>
                     </div>
                 </div>
             </div>
@@ -275,7 +286,12 @@
             "expandable_attrb" : "expandable",
             "toggle_attrb" : "expandtoggle",
             "collapse_class" : "collapsed",
-            "toggle_state_attrb": "togglecollapsed",
+            "toggle_state_attrb" : "togglecollapsed",
+            "tab_container_attrb" : "tabcontainer",
+            "tab_selector_class" : "tab-selector",
+            "tab_content_class" : "tab-content",
+            "tab_content_key_attrb" : "fortab",
+            "tab_visiblity_class" : "visible",
         };
         initInteractiveFormatting(formatMapping);
     </script>
