@@ -78,10 +78,24 @@ p em, div.paragraph em {
 div.details[tabcontainer]
 {
     width: 100%;
-    border: 1px solid rgba(160, 160, 160, 0.7);
     margin-top: 16px;
     margin-bottom: 16px;
-    border-radius: 3px;
+}
+
+div.details[tabcontainer] > div.tab-container
+{
+    border-radius: 0px 3px 3px 3px;
+    overflow: hidden;
+}
+
+div.client-phase div.tab-container
+{
+    background-color: #dfffdf;
+}
+
+div.server-phase div.tab-container
+{
+    background-color: #e9f3ff;
 }
 
 div.details[tabcontainer] > div.tab-selector
@@ -97,17 +111,35 @@ div.details[tabcontainer] > div.tab-selector > input
 
 div.details[tabcontainer] > div.tab-selector > label
 {
+    font-size: 14px;
     margin-right: 3px;
-    padding: 5px;
+    padding: 5px 10px;
     flex-basis: auto;
     flex-shrink: 0;
     flex-grow: 0;
 
-    border-bottom: 3px solid rgba(0,0,0,0.1);
+    border-bottom: 2px solid rgba(0,0,0,0.1);
 
     cursor: pointer;
 }
 
+div.client-phase div.details[tabcontainer] > div.tab-selector > label:hover,
+div.client-phase div.details[tabcontainer] > div.tab-selector > input:checked + label
+{
+    background-color: #dfffdf;
+    border-radius: 3px 3px 0px 0px;
+    border-bottom: 2px solid rgba(0,0,0,0.0);
+}
+
+div.server-phase div.details[tabcontainer] > div.tab-selector > label:hover,
+div.server-phase div.details[tabcontainer] > div.tab-selector > input:checked + label
+{
+    background-color: #e9f3ff;
+    border-radius: 3px 3px 0px 0px;
+    border-bottom: 2px solid rgba(0,0,0,0.0);
+}
+
+/*
 div.details[tabcontainer] > div.tab-selector > label:hover
 {
     background-color: rgba(160,160,160,0.3);
@@ -119,14 +151,15 @@ div.details[tabcontainer] > div.tab-selector > input:checked + label
     background-color: rgba(160,160,160,0.3);
     border-bottom: 3px solid rgba(0,0,0,0.5);
 }
+*/
 
-div.details[tabcontainer] > div.tab-content
+div.details[tabcontainer] div.tab-content
 {
     display: none;
     margin: 16px;
 }
 
-div.details[tabcontainer] > div.tab-content.visible
+div.details[tabcontainer] div.tab-content.visible
 {
     display: block;
 }
@@ -267,7 +300,7 @@ div.tooltip-text::after {
 }
 
 .client-phase {
-    background-color: #d7f5d7;
+    background-color: #c8fac8;
     border: 1px solid #a9dba9;
 }
 
