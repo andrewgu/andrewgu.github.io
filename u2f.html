@@ -44,17 +44,20 @@
                 <h1 class="phase-name" expandtoggle>
                     <span class="expand">+</span>
                     <span class="shrink">−</span>
-                    &#x2b92; Connect with HTTPS
+                    &#x2b92; Open HTTPS Connection
                 </h1>
                 <div class="details">
                     <p>
-                        The client (or browser) first makes a HTTPS connection with the server. 
-                        This is to prevent a man-in-the-middle attack which would allow
-                        an attacker to impersonate either the server (replay attack) or the FIDO authenticator.
+                        How you do this is up to you, but make sure you do it.
                     </p>
                     <p>
-                        If you are writing a website, you get this for free with your standard HTTPS everywhere setup.
-                        If you are writing a native client, make sure you are using HTTPS to talk to your servers.
+                        First you need a secure connection between the client and server, which is probably done with HTTPS. 
+                        This is to prevent a man-in-the-middle attack which would allow
+                        an attacker to impersonate either the server or the FIDO authenticator.
+                    </p>
+                    <p>
+                        If you are writing a website, you get this with your standard HTTPS everywhere setup.
+                        If you are writing a native client, HTTPS will do the job, though technically you could do it some other way.
                     </p>
                 </div>
             </div>
@@ -62,13 +65,15 @@
                 <h1 class="phase-name" expandtoggle>
                     <span class="expand">+</span>
                     <span class="shrink">−</span>
-                    &#x2b92; User Login
+                    &#x2b92; Bootstrap Login
                 </h1>
                 <div class="details">
                     <p>
-                        You need some way to connect data in the registration process to the user's account. Typically, you do this
-                        by having the user log in. If they haven't enabled 2FA/MFA yet, then it's usually just username + password until
-                        2FA/MFA is set up.
+                        How you do this is up to you, but make sure you do it.
+                    </p>
+                    <p>
+                        You need some way to connect the second factor to the user. You usually do this by having the user create an 
+                        account (e.g. email and password). When they log in with that, you get a user ID for linking their second factor.
                     </p>
                     <p>
                         If you are requiring 2FA/MFA, then you might restrict the user account like an "unverified" account until the
@@ -155,8 +160,12 @@
                     <span class="expand">+</span>
                     <span class="shrink">−</span>
                     <!--&#x1f5a2;-->User Prompt
-                </h1>
+                </h1>              
                 <div class="details" tabcontainer>
+                    <p>
+                        The browser (or your native app) needs to take the challenge from the server and generate a response that could only come from your FIDO authenticator. 
+                        This process works differently depending on whether you're doing this from a browser or from native code. 
+                    </p>  
                     <div class="tab-selector">
                         <input id="client-phase-webauthn-tab" type="radio" name="reg-prompt-user-nav" checked>
                         <label for="client-phase-webauthn-tab">Browser</label>
@@ -167,13 +176,23 @@
                     <div class="tab-container">
                         <div class="tab-content" fortab="client-phase-webauthn-tab">
                             <h2>
-                                Prompting with WebAuthn in the Browser
+                                Prompting using WebAuthn in the Browser
                             </h2>
+                            <p>
+                                Browsers implement the WebAuthn API, which your JavaScript will call. It hides the complexities of actually talking
+                                to the authenticator device, so I recommend using WebAuthn where you can.
+                            </p>
+                            <p>
+                                This example doesn't cover all of the configuration options. It just illustrates a typical sane setup.
+                            </p>
                         </div>
                         <div class="tab-content" fortab="client-phase-python-tab">
                             <h2>
-                                Prompting from a Native Application (using Python)
+                                Prompting in a Native Application
                             </h2>
+                            <p>
+                                In a native application, you can still just embed a browser to use WebAuthn. However, if that isn't an option, you can try to talk to the authenticator directly.
+                            </p>
                         </div>
                     </div>
                 </div>
