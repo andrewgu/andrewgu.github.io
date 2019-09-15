@@ -20,6 +20,12 @@ h2
     font-size: 18px;
 }
 
+h3
+{
+    font-size: 16px;
+    font-weight: bold;
+}
+
 .page-header > .subtitle
 {
     font-size: 16px;
@@ -46,7 +52,7 @@ p em, div.paragraph em {
 }
 
 .page-header {
-    width: 800px;
+    width: 900px;
     margin: 20px auto 0;
     padding: 17px;
     /*background-color: #f8f8f8;*/
@@ -63,15 +69,19 @@ p em, div.paragraph em {
     color: #222222;
     margin: 0 auto;
     padding: 17px;
-    width: 800px;
+    width: 900px;
 }
 
 .content-root {
     margin: 0 auto;
     padding: 17px;
-    width: 800px;
+    width: 900px;
     color: #222222;
     /*background-color: #f8f8f8;*/
+}
+
+a {
+    color: #0000FF;
 }
 
 /* Tabbed div */
@@ -80,6 +90,13 @@ div.details[tabcontainer]
     width: 100%;
     margin-top: 16px;
     margin-bottom: 16px;
+}
+
+div.subsection > div.details
+{
+    background-color: rgba(255,255,255,0.3);
+    border: 1px solid rgba(0,0,0,0.1);
+    padding: 10px;
 }
 
 div.details[tabcontainer] > div.tab-container
@@ -139,20 +156,6 @@ div.server-phase div.details[tabcontainer] > div.tab-selector > input:checked + 
     border-bottom: 2px solid rgba(0,0,0,0.0);
 }
 
-/*
-div.details[tabcontainer] > div.tab-selector > label:hover
-{
-    background-color: rgba(160,160,160,0.3);
-    border-bottom: 3px solid rgba(0,0,0,0.5);
-}
-
-div.details[tabcontainer] > div.tab-selector > input:checked + label
-{
-    background-color: rgba(160,160,160,0.3);
-    border-bottom: 3px solid rgba(0,0,0,0.5);
-}
-*/
-
 div.details[tabcontainer] div.tab-content
 {
     display: none;
@@ -180,6 +183,35 @@ code, div.code {
     display: block;
 }
 
+span[tab]::after {
+    content: "\00a0\00a0\00a0\00a0"
+}
+
+span[tab__]::after {
+    content: "\00a0\00a0\00a0\00a0\00a0\00a0\00a0\00a0"
+}
+
+span[tab____]::after {
+    content: "\00a0\00a0\00a0\00a0\00a0\00a0\00a0\00a0\00a0\00a0\00a0\00a0"
+}
+
+span[tab______]::after {
+    content: "\00a0\00a0\00a0\00a0\00a0\00a0\00a0\00a0\00a0\00a0\00a0\00a0\00a0\00a0\00a0\00a0"
+}
+
+span.mono
+{
+    background-color: rgba(0,0,0,0.1);
+    font-family: 'Ubuntu Mono', monospace;
+    color: #222222;
+    padding: 2px;
+}
+
+span.mono a
+{
+    color: #000099;
+}
+
 div.code > input[expandtoggle] {
     float: right;
     margin-top: -3px;
@@ -187,8 +219,8 @@ div.code > input[expandtoggle] {
 }
 
 div.code-paragraph > div.details {
-    margin-left: 30px;
-    margin-right: 30px;
+    margin-left: 17px;
+    margin-right: 17px;
 }
 
 /* Tooltip formatting */
@@ -266,20 +298,33 @@ div.tooltip-text::after {
     line-height: 36px;
 }
 
-.protocol-phase.collapsed > h1.phase-name > span.expand {
+.collapsed [expandtoggle] > span.expand {
     display: block;
 }
 
-.protocol-phase > h1.phase-name > span.expand {
+[expandtoggle] > span.expand {
     display: none;
 }
 
-.protocol-phase.collapsed > h1.phase-name > span.shrink {
+.collapsed [expandtoggle] > span.shrink {
     display: none;
 }
 
-.protocol-phase > h1.phase-name > span.shrink {
+[expandtoggle] > span.shrink {
     display: block;
+}
+
+.subsection > h3 > span.expand, .subsection > h3 > span.shrink {
+    float: left;
+    width: 16px;
+    height: 16px;
+    line-height:16px;
+    font-size: 16px;
+    margin-top: 2px;
+    margin-right: 5px;
+    text-align: center;
+    border: 1px solid #a0a0a0;
+    color: #888888;
 }
 
 .protocol-phase > h1.phase-name > span.expand, h1.phase-name span.shrink {
@@ -295,7 +340,7 @@ div.tooltip-text::after {
     color: #888888;
 }
 
-.protocol-phase > .details {
+.protocol-phase > .details, .subsection {
     overflow: hidden;
 }
 
@@ -326,25 +371,42 @@ div.tooltip-text::after {
     cursor: pointer;
 }
 
+input[expandtoggle] {
+    display: block;
+    margin: 3px 0px;
+}
+
 .short {
-    transition-property: opacity;
+    transition-property: opacity, margin, padding;
     transition-duration: 0.2s;
     transition-timing-function: cubic-bezier(0.25, 0.46, 0.45, 0.94);
-    height: 0;
     opacity: 0;
+    height: 0;
+    box-sizing: border-box;
+    
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: hidden;
 }
 
 div.collapsed > .short {
-    transition-property: opacity;
+    transition-property: opacity, margin, padding;
     transition-duration: 0.2s;
     transition-timing-function: cubic-bezier(0.25, 0.46, 0.45, 0.94);
     height: auto;
     opacity: 1;
+    box-sizing: border-box;
 }
 
 .details
 {
     display: block;
+}
+
+.details.no-indent
+{
+    margin-left: 0px !important;
+    margin-right: 0px !important;
 }
 
 div.collapsed > .details {

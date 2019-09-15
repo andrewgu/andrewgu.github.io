@@ -14,25 +14,32 @@
                 When I was writing FIDO/U2F multi-factor authentication for my own project, I couldn't find any good tutorials.
             </p>
             <p>    
-                In typical unsatisfying tutorial fashion (I'm talking to you, unnamed Medium tutorials), 
-                every one regurgitated the browser-side JavaScript calls for prompting the user and said nothing
-                about the remaining 95% of the details. 
-                What do my servers need to do? What do these JSON objects 
-                actually mean? How do I actually verify the user?
+                In typical unsatisfying tutorial fashion, you get to choose between Medium posts that don't tell you remotely
+                enough, and highly detailed posts and specs that put you in front of the firehose.
             </p>
             <p>
-                This is my attempt at a <em>useful</em> tutorial.
+                This is my attempt at a tutorial that introduces FIDO bit by bit. I've included references and links
+                to my source material (the firehose) at the bottom.
             </p>
             <h1>What isn't covered?</h1>
             <p>
-                This is for FIDO version 1, aka U2F. FIDO2 follows the same principles but works slightly differently.
+                TL;DR There are three-ish versions of the protocol. There's the old U2F, then there's FIDO and FIDO2. 
+                This covers FIDO mostly and stays away from the extra stuff that FIDO2 adds.
             </p>
             <h1 class="phase-name">
                 Prerequisites
             </h1>
             <p>
-                The demo code requires <a target="_blank" href="https://www.python.org/">Python 3</a> and the <a target="_blank" href="https://github.com/Yubico/python-fido2">fido2</a> package:
-                <code>&gt; pip install fido2</code>
+                You will need a FIDO authenticator to follow this tutorial. I used a YubiKey 4.
+                FIDO2 is not covered in the example code, so YubiKey 5's, Android authenticator, etc. which are FIDO2 will not work. 
+                However, you can get them working with some adjustments.
+            </p>
+            <p>
+                The demo code uses <a target="_blank" href="https://www.python.org/">Python 3</a> and several packages that aren't installed by default:
+                <code>
+                    &gt; pip install fido2
+                    &gt; pip install cbor2
+                </code>
             </o>
             <p>
                 JavaScript parts can be run in your browser's dev console.
@@ -48,17 +55,13 @@
                 </h1>
                 <div class="details">
                     <p>
-                        How you do this is up to you, but make sure you do it.
+                        The browser will do this for you. If you are writing a native client, you should still use HTTPS.
+                        It accomplishes two key things:
                     </p>
-                    <p>
-                        First you need a secure connection between the client and server, which is probably done with HTTPS. 
-                        This is to prevent a man-in-the-middle attack which would allow
-                        an attacker to impersonate either the server or the FIDO authenticator.
-                    </p>
-                    <p>
-                        If you are writing a website, you get this with your standard HTTPS everywhere setup.
-                        If you are writing a native client, HTTPS will do the job, though technically you could do it some other way.
-                    </p>
+                    <ol>
+                        <li>Prevent man in the middle attacks</li>
+                        <li>Prove your server is actually you</li>
+                    </ol>
                 </div>
             </div>
             <div class="protocol-phase client-phase" expandable>
@@ -69,15 +72,12 @@
                 </h1>
                 <div class="details">
                     <p>
-                        How you do this is up to you, but make sure you do it.
+                        You need a user ID that you can register the FIDO authenticator to. You usually do this by having the user create an 
+                        account (e.g. email and password).
                     </p>
                     <p>
-                        You need some way to connect the second factor to the user. You usually do this by having the user create an 
-                        account (e.g. email and password). When they log in with that, you get a user ID for linking their second factor.
-                    </p>
-                    <p>
-                        If you are requiring 2FA/MFA, then you might restrict the user account like an "unverified" account until the
-                        FIDO authenticator is set up.
+                        Best practice is to restrict what the account can access until it has a second factor set up. You should support
+                        registering multiple authenticators per user so that users can set up multiple in case they lose one.
                     </p>
                 </div>
             </div>
@@ -115,8 +115,7 @@
                             </div>
                         </div>
                         <p>
-                            It's crucial that the server generates a <em>random</em> challenge so that it's not possible 
-                            for an eavesdropper to replay a previous registration.
+                            The challenge must be <em>random</em> so that an eavesdropper can't replay a previous registration.
         
                             The server needs to remember that this challenge is for this specific user.
                         </p>
@@ -126,7 +125,7 @@
                     </h2>
                     <p>
                         Before we can send the challenge to the actual FIDO authenticator, we will need to encode it using <a target="_blank" href="https://en.wikipedia.org/wiki/Base64#Implementations_and_history">base64url without padding</a>.
-                        Technically we don't have to do the base 64 encoding until the next step (client talking to the FIDO authenticator), but base64 is convenient for returning a binary blob in a HTTP response body, so we might as well encode it on the server.
+                        Technically we don't have to do the base 64 encoding until the next step (client talking to the FIDO authenticator), but base64 is convenient for returning a binary blob in a HTTP response body.
                     </p>
                     <div class="code-paragraph" expandable>
                         <div class="code">
@@ -160,11 +159,11 @@
                     <span class="expand">+</span>
                     <span class="shrink">−</span>
                     <!--&#x1f5a2;-->User Prompt
-                </h1>              
+                </h1>
                 <div class="details" tabcontainer>
                     <p>
-                        The browser (or your native app) needs to take the challenge from the server and generate a response that could only come from your FIDO authenticator. 
-                        This process works differently depending on whether you're doing this from a browser or from native code. 
+                        Using the challenge from the server and the "relying party ID" (domain name), the browser/native client asks
+                        the authenticator to generate a key pair that is unique for your site/app.
                     </p>  
                     <div class="tab-selector">
                         <input id="client-phase-webauthn-tab" type="radio" name="reg-prompt-user-nav" checked>
@@ -176,22 +175,164 @@
                     <div class="tab-container">
                         <div class="tab-content" fortab="client-phase-webauthn-tab">
                             <h2>
-                                Prompting using WebAuthn in the Browser
+                                Browser (WebAuthn)
                             </h2>
                             <p>
-                                Browsers implement the WebAuthn API, which your JavaScript will call. It hides the complexities of actually talking
-                                to the authenticator device, so I recommend using WebAuthn where you can.
+                                In browsers, the easiest way is to call the <a target="_blank" href="https://developer.mozilla.org/en-US/docs/Web/API/Web_Authentication_API">WebAuthn API</a> with JavaScript. 
+                                This example covers the basic implementation using sensible defaults.
                             </p>
                             <p>
-                                This example doesn't cover all of the configuration options. It just illustrates a typical sane setup.
+                                There are three steps:
                             </p>
+                            <div class="subsection" expandable>
+                                <h3 expandtoggle>
+                                    <span class="expand">+</span>
+                                    <span class="shrink">−</span>
+                                    Set up the options object
+                                </h3>
+                                <div class="details">
+                                    <div class="code-paragraph" expandable>
+                                        <div class="short">
+                                            <input type="button" value="Line by Line" expandtoggle>
+                                            <div class="code">
+                                                var options = {<br>
+                                                <span tab></span>publicKey: {<br>
+                                                <span tab__></span>rp: {<br>
+                                                <span tab____></span>id: <span class="has-tooltip">"localhost"<div class="tooltip-text" style="width: 350px; padding-top: 5px;">Typically your domain name. "localhost" for testing.</div></span>,<br>
+                                                <span tab____></span>name: <span class="has-tooltip">"Test App"<div class="tooltip-text" style="width: 300px; padding-top: 5px;">Friendly name for the prompt</div></span><br>
+                                                <span tab__></span>},<br>
+                                                <span tab__></span>challenge: <span class="has-tooltip">base64urlToBuffer(serverChallenge)<div class="tooltip-text" style="width: 300px; padding-top: 5px;">Raw bits of the server challenge</div></span>,<br>
+                                                <span tab__></span>user: {<br>
+                                                <span tab____></span>displayName: <span class="has-tooltip">"Test User"<div class="tooltip-text" style="width: 300px; padding-top: 5px;">Friendly name</div></span>,<br>
+                                                <span tab____></span>name: test_user@example.com,<br>
+                                                <span tab____></span>id: <span class="has-tooltip">base64urlToBuffer(userId)<div class="tooltip-text" style="width: 350px; padding-top: 5px;">Actual user identifier used for verification. This can be just the UTF-8 encoded user name.</div></span><br>
+                                                <span tab__></span>},<br>
+                                                <span tab__></span>pubKeyCredParams: [<br>
+                                                <span tab____></span>{<br>
+                                                <span tab______></span>type: <span class="has-tooltip">"public-key"<div class="tooltip-text" style="width: 300px; padding-top: 5px;">Magic word for "FIDO"</div></span>,<br>
+                                                <span tab______></span>alg: <span class="has-tooltip">-7<div class="tooltip-text" style="width: 350px; padding-top: 5px; left: -13px;">-7 is the magic number for ECDSA w/ SHA-256 signature algorithm. -37 is also common for RSA w/ SHA-256.<sup>1</sup></div></span><br>
+                                                <span tab____></span>}<br>
+                                                <span tab__></span>],<br>
+                                                <span tab__></span>timeout: <span class="has-tooltip">30000<div class="tooltip-text" style="width: 350px; padding-top: 5px; left: -10px;">Time in milliseconds before the prompt should time out.</div></span>,<br>
+                                                <span tab__></span>attestation: <span class="has-tooltip">"direct"<div class="tooltip-text" style="width: 350px; padding-top: 5px; left: -10px;">"Direct" means that a hardware attestation is required.</div></span><br>
+                                                <span tab></span>}<br>
+                                                };
+                                            </div>
+                                        </div>
+                                        <div class="details no-indent">
+                                            <input type="button" value="Short Version" expandtoggle>
+                                            <p>
+                                                You can find an excellent reference for the options object in <a target="_blank" href="https://developer.mozilla.org/en-US/docs/Web/API/PublicKeyCredentialCreationOptions">MDN</a>.
+                                            </p>
+
+                                            When creating this object, we need to know a few things like the user's ID and the server challenge. The API expects them as Buffer objects, 
+                                            so we need a helper function:
+
+<pre><code>function base64urlToBuffer(base64url)
+{
+    var rawString = window.atob(base64url.replace(/_/g, "/").replace(/-/g, "+"));
+    var buffer = new ArrayBuffer(rawString.length);
+    var array = new Uint8Array(buffer);
+    for (var i = 0; i < rawString.length; i++) {
+        array[i] = rawString.charCodeAt(i);
+    }
+    return buffer;
+}</code></pre>
+                                            <p>
+                                                We know our server challenge's base64url encoding from before:
+                                            </p>
+                                            <pre><code>var serverChallenge = "Sy_ncmOygDGzlhQPhGCGP-gLiOu5dKnmoQacpAQL9Uc"</code></pre>
+                                            <p>
+                                                We also need a unique identifier for the user. This identifier should  not change if the user changes their email address, etc. We'll just make up some base64 for now.
+                                            </p>
+                                            <pre><code>var userId = "abcdef"</code></pre>
+                                            <p>
+                                                The options object contains a single field "publicKey" and the value is a <span class="mono"><a target="_blank" href="https://developer.mozilla.org/en-US/docs/Web/API/PublicKeyCredentialCreationOptions">PublicKeyCredentialCreationOptions</a></span>.
+                                            </p>
+                                            <pre><code>var options = {
+    publicKey: {</code></pre>
+                                            <p>
+                                                In most cases, "relying party" just means your domain name. The browser checks that it matches your SSL certificate. "localhost" is an exception, useful for testing.
+                                            </p>
+                                            <pre><code>        rp: {
+            id: "localhost",
+            name: "Test App"
+        },</code></pre>
+                                            <p>
+                                                The API expects us to pass in a byte buffer, so we decode the base64 using the helper function up above:
+                                            </p>
+                                            <pre><code>        challenge: base64urlToBuffer(serverChallenge)</code></pre>
+                                            <p>
+                                                The API also expects the user ID as a byte buffer:
+                                            </p>
+                                            <pre><code>        user: {
+            displayName: "Test user",
+            name: "test@example.com",
+            id: base64urlToBuffer(UserId)
+        },</code></pre>
+                                            <p>
+                                                Only the "public-key" type is supported for now. -7 means ECDSA with SHA-256. -37 for RSA with SHA-256 is also common.
+                                                You can look up numbers and names <a target="_blank" href="https://www.iana.org/assignments/cose/cose.xhtml#algorithms">in this table</a>.
+                                                For this example we will only do ECDSA with SHA-256, because that's what the YubiKey 4 uses.
+                                            </p>
+                                            <pre><code>        pubKeyCredParams: [
+            {
+                type: "public-key",
+                alg: -7 // ECDSA SHA256
+            }
+        ],</code></pre>
+                                            <p>
+                                                <span class="mono">timeout</span> just refers to how long the prompt will wait.
+                                            </p>
+                                            <pre><code>        timeout: 10000,</code></pre>
+                                            <p>
+                                                <span class="mono">"direct"</span> means that the authenticator will need to prove that it's a hardware key by
+                                                signing the response using a certificate whose private key is stored in the authenticator in a place where your
+                                                computer can't read it. The server will 
+                                                verify the signature and verify the certificate as proof that it's actually the authenticator that is responding.
+                                            </p>
+                                            <p>
+                                                For example, on the YubiKey 4,
+                                                you will get an attestation tied to a certificate from Yubico as evidence that this is a real YubiKey.
+                                            </p>
+                                            <pre><code>        attestation: "direct"
+    }
+};</code></pre>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="subsection" expandable>
+                                <h3 expandtoggle>
+                                    <span class="expand">+</span>
+                                    <span class="shrink">−</span>
+                                    Call <span class="mono">navigator.credentials.create(options)</span>
+                                </h3>
+                                <div class="details">
+                                    Stuff here.
+                                </div>
+                            </div>
+                            <div class="subsection" expandable>
+                                <h3 expandtoggle>
+                                    <span class="expand">+</span>
+                                    <span class="shrink">−</span>
+                                    Pass response to server
+                                </h3>
+                                <div class="details">
+                                    Stuff here.
+                                </div>
+                            </div>
                         </div>
                         <div class="tab-content" fortab="client-phase-python-tab">
                             <h2>
-                                Prompting in a Native Application
+                                Native (python-fido2)
                             </h2>
                             <p>
-                                In a native application, you can still just embed a browser to use WebAuthn. However, if that isn't an option, you can try to talk to the authenticator directly.
+                                I still recommend using WebAuthn because it abstracts the OS and hardware specific aspects. 
+                                However, if you can't embed a web view, you can use client-side libraries to talk to the device. 
+                                This tutorial uses 
+                                <a target="_blank" href="https://github.com/Yubico/python-fido2">Yubico's FIDO2 library</a> to talk to a
+                                USB authenticator.
                             </p>
                         </div>
                     </div>
@@ -238,7 +379,7 @@
             <h1>Title H1</h1>
             <h2>Section H2</h2>
             <h3>Subheading H3</h3>
-            <p>Body text <a href="https://fidoalliance.org/specifications/">Reference Link</a></p>
+            <p>Body text <a target="_blank" href="https://fidoalliance.org/specifications/">Reference Link</a></p>
             <code class="python">This is python code</code>
             <code class="javascript">This is javascript code</code>
             <code class="json">{inline json stuff}</code>
