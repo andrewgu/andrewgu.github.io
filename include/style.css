@@ -69,6 +69,7 @@ p em, div.paragraph em {
     margin: 0 auto;
     padding: 17px;
     width: 900px;
+    text-align: center;
 }
 
 .content-root {
@@ -170,7 +171,7 @@ div.details[tabcontainer] div.tab-content.visible
 code, div.code {
     margin: 8px 0;
     border: 1px solid #888888;
-    padding: 8px 18px;
+    padding: 8px 13px;
     box-sizing: border-box;
     width: 100%;
     background-color: #eeeeee;
@@ -179,6 +180,16 @@ code, div.code {
     font-family: 'Ubuntu Mono', monospace;
     color: #222222;
     display: block;
+}
+
+code .clickdetail, .code .clickdetail {
+    margin: 5px -13px;
+    border-left: none;
+    border-right: none;
+}
+
+code > pre, .code > pre {
+    margin: 0;
 }
 
 span[tab]::after {
@@ -205,9 +216,13 @@ span.mono
     padding: 2px;
 }
 
-span.mono a
+span.mono > a, a > span.mono
 {
     color: #000099;
+}
+
+span.mono:hover > a, a:hover > span.mono, code [clickdetail]:hover, div.code [clickdetail]:hover {
+    background-color: rgba(0,0,0,0.15);
 }
 
 div.code > input[expandtoggle] {
@@ -408,19 +423,10 @@ code [clickdetail], .code [clickdetail] {
     font-family: 'Open Sans', sans-serif;
 
     background-color: rgba(255, 255, 255, 1);
+    opacity: 0;
     border: 1px solid #AAAAAA;
 
-    transition-property: background-color;
-    transition-duration: 1.5s;
+    transition-property: opacity;
+    transition-duration: 0.5s;
     transition-timing-function: cubic-bezier(0.25, 0.46, 0.45, 0.94);
-}
-
-code .clickdetail, .code .clickdetail {
-    margin: 5px -18px;
-    border-left: none;
-    border-right: none;
-}
-
-code > pre, .code > pre {
-    margin: 0;
 }

@@ -92,8 +92,8 @@ function setupTooltipInteraction(element, tooltipElement, tooltipClass)
     tooltipElement.style.opacity = 0.0;
     document.body.appendChild(tooltipElement);
 
-    element.addEventListener("mouseenter", e => onMouseEnter(element, tooltipElement));
-    element.addEventListener("mouseleave", e => onMouseLeave(element, tooltipElement));
+    element.addEventListener("mouseenter", function(e){onMouseEnter(element, tooltipElement)});
+    element.addEventListener("mouseleave", function(e){onMouseLeave(element, tooltipElement)});
 }
 
 function initInteractiveFormatting(formatMapping)
@@ -142,12 +142,16 @@ function initInteractiveFormatting(formatMapping)
                 if (alreadyExpanded && alreadyExpanded == "true")
                 {
                     targetElem.style.display = "none";
+                    targetElem.style.opacity = 0;
                     element.setAttribute("expanded", "false")
                 }
                 else
                 {
                     targetElem.style.display = "block";
                     element.setAttribute("expanded", "true")
+                    window.requestAnimationFrame(function() {
+                        targetElem.style.opacity = 1;
+                    });
                 }
             }
         }

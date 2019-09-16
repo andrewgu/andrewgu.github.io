@@ -171,30 +171,30 @@ print(hexlify(challenge))</code></pre>
                                 <div class="details">
                                     <p>
                                         The options object is a 
-                                        <a target="_blank" href="https://developer.mozilla.org/en-US/docs/Web/API/CredentialsContainer/create"><span class="mono">CredentialCreationOptions</span></a>, which
-                                        only accepts a "publicKey" property that is a <a target="_blank" href="https://developer.mozilla.org/en-US/docs/Web/API/PublicKeyCredentialCreationOptions"><span class="mono">PublicKeyCredentialCreationOptions</span></a>.
+                                        <span class="mono"><a target="_blank" href="https://developer.mozilla.org/en-US/docs/Web/API/CredentialsContainer/create">CredentialCreationOptions</a></span>, which
+                                        only accepts a "publicKey" property that is a <span class="mono"><a target="_blank" href="https://developer.mozilla.org/en-US/docs/Web/API/PublicKeyCredentialCreationOptions">PublicKeyCredentialCreationOptions</a></span>.
                                     </p>
                                     <div class="code">
 <pre templated>var options = {
-publicKey: {
-    rp: {
-        %{id: "localhost"}%(dt-wan-rpid),
-        name: "Test App"
-    },
-    %{challenge: base64urlToBuffer(serverChallenge)}%(dt-wan-server-challenge),
-    user: {
-        displayName: "Test User",
-        name: "test_user@example.com",
-        %{id: base64urlToBuffer(userId)}%(dt-wan-user-id),
-    },
-    pubKeyCredParams: [
-        {
-            %{type: "public-key"}%(dt-wan-pubkey-type),
-            %{alg: -7}%(dt-wan-alg-code)
-        }
-    ],
-    %{timeout: 30000}%(dt-wan-prompt-timeout),
-    %{attestation: "direct"}%(dt-wan-attestation-type)
+    publicKey: {
+        rp: {
+            %{id: "localhost"}%(dt-wan-rpid),
+            name: "Test App"
+        },
+        %{challenge: base64urlToBuffer(serverChallenge)}%(dt-wan-server-challenge),
+        user: {
+            displayName: "Test User",
+            name: "test_user@example.com",
+            %{id: base64urlToBuffer(userId)}%(dt-wan-user-id),
+        },
+        pubKeyCredParams: [
+            {
+                %{type: "public-key"}%(dt-wan-pubkey-type),
+                %{alg: -7}%(dt-wan-alg-code)
+            }
+        ],
+        %{timeout: 30000}%(dt-wan-prompt-timeout),
+        %{attestation: "direct"}%(dt-wan-attestation-type)
     }
 };</pre>
                                     </div>
@@ -279,70 +279,9 @@ publicKey: {
                 </div>
             </div>
         </div>
-        <div class="content-root">
-            <h1>Title H1</h1>
-            <h2>Section H2</h2>
-            <h3>Subheading H3</h3>
-            <p>Body text <a target="_blank" href="https://fidoalliance.org/specifications/">Reference Link</a></p>
-            <code class="python">This is python code</code>
-            <code class="javascript">This is javascript code</code>
-            <code class="json">{inline json stuff}</code>
-            <code class="hex">01 23 45 67 89 0A BC DE F0</code>
-            <code class="base64">ThisIsWebSafeBase64</code>
-
-            <div class="protocol-phase expandable" id="test_expandable">
-                <div class="expandable-inner">
-                    <div class="protocol-phase-header header">
-                        <input class="protocol-phase-toggle" type="button" value="Explain" expandtarget="test_expandable">
-                        <div class="protocol-phase-previewer">Name of Protocol Phase</div>
-                    </div>
-                    <div class="protocol-phase-detail detail">
-                        <h1>Detail of Protocol Phase</h1>
-
-                        <p>Explanation stuff here.</p>
-                        <!--
-                        <div class="data expandable" id="test_data">
-                            <div class="data-header header" previewer>
-                                <input class="data-toggle" type="button" value="Annotate" expandtarget="test_data">
-                                <div class="data-previewer" preview>
-                                    <code class="json">{Collapsed Json}</code>
-                                </div>
-                            </div>
-                            <div class="data-expanded">
-                                <code class="json">00 00 00 00</code>
-                                <p>Description</p>
-                                <code class="json">00 00 00 00</code>
-                                <p>Description</p>
-                                <code class="json">00 00 00 00</code>
-                                <p>Description</p>
-                            </div>
-                        </div>
-
-                        <div class="blob expandable" id="test_blob">
-                            <div class="blob-header header" previewer>
-                                <input class="blob-toggle" type="button" value="Decode" expandtarget="test_blob">
-                                <div class="blob-previewer">
-                                    <code class="base64">Base 64</code>
-                                </div>
-                            </div>
-                            <div class="blob-expanded">
-                                <code class="hex">00 00 00 00</code>
-                            </div>
-                        </div>
-
-                        <div class="show-code expandable" id="test_showcode">
-                            <div class="show-code-header header">
-                                <input class="show-code-expand-button" type="button" value="Code" expandtarget="test_showcode" previewer>
-                            </div>
-                            <code class="show-code-expanded python">Detail code</code>
-                        </div>
-                        -->
-                    </div>
-                </div>
-            </div>
-        </div>
         <div class="page-footer">
-            &copy; 2019 Andrew Gu | MIT License
+            &copy; 2019 Andrew Gu<br><br>
+            <a rel="license" href="http://creativecommons.org/licenses/by/3.0/us/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by/3.0/us/88x31.png" /></a><br />This work is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by/3.0/us/">Creative Commons Attribution 3.0 United States License</a>.
         </div>
     </body>
     <script type="text/javascript" src="./include/util.js"></script>
