@@ -69,6 +69,33 @@ function setVisibleTabPage(buttonElement, pages, container, formatMapping)
     visibleNode.classList.add(tabVisibilityClass);
 }
 
+function setupTooltipInteraction(element, tooltipElement, tooltipClass)
+{
+    function onMouseEnter(src, tooltip)
+    {
+        var clientRect = src.getBoundingClientRect();
+        var targetX = window.scrollX + clientRect.left;
+        var targetY = window.scrollY + clientRect.bottom;
+        tooltip.style.left = targetX + "px";
+        tooltip.style.top = targetY + "px";
+        tooltip.style.opacity = 1.0;
+    }
+
+    function onMouseLeave(src, tooltip)
+    {
+        tooltip.style.left = "0px";
+        tooltip.style.top = "0px";
+        tooltip.style.opacity = 0.0;
+    }
+
+    tooltipElement.classList.add(tooltipClass);
+    tooltipElement.style.opacity = 0.0;
+    document.body.appendChild(tooltipElement);
+
+    element.addEventListener("mouseenter", e => onMouseEnter(element, tooltipElement));
+    element.addEventListener("mouseleave", e => onMouseLeave(element, tooltipElement));
+}
+
 function initInteractiveFormatting(formatMapping)
 {
     // Use "collapse" CSS class as the modified setting so that no-JS fails to open
@@ -79,10 +106,14 @@ function initInteractiveFormatting(formatMapping)
     var tabContainerAttrbString = formatMapping["tab_container_attrb"];
     var tabSelectorClass = formatMapping["tab_selector_class"];
     var tabContentClass = formatMapping["tab_content_class"];
+    var tooltipAttrbString = formatMapping["tooltip_attrb_string"];
+    var tooltipClass = formatMapping["tooltip_class"];
+    var clickdetailClass = formatMapping["clickdetail_class"];
+    var clickdetailAttrbString = formatMapping["clickdetail_attrb_string"];
 
+    // Expandable sections
     var expanderElements = document.querySelectorAll("[" + toggleAttrbString + "]");
-    expanderElements.forEach(function(element, index)
-    {
+    expanderElements.forEach(function(element, index) {
         var targetElem = findParentExpandable(element, expandableElemAttrb);
         if (targetElem !== null)
         {
@@ -90,16 +121,41 @@ function initInteractiveFormatting(formatMapping)
             element.onclick = function() {
                 flipExpandState(targetElem, toggleStateAttrb);
                 updateExpandState(targetElem, collapserClass, getExpandState(targetElem, toggleStateAttrb));
-                
             }
             // Update current state
             updateExpandState(targetElem, collapserClass, getExpandState(targetElem, toggleStateAttrb));
         }
     });
 
+    // Subsections keyed to a specific trigger to expand details.
+    var clickdetailExpanders = document.querySelectorAll("[" + clickdetailAttrbString + "]");
+    clickdetailExpanders.forEach(function(element, index) {
+        var targetElem = document.querySelector("#" + element.getAttribute(clickdetailAttrbString));
+        console.log(targetElem);
+        if (targetElem !== null)
+        {
+            // Import the node.
+            targetElem.style.display = "none";
+            
+            element.onclick = function() {
+                var alreadyExpanded = element.getAttribute("expanded");
+                if (alreadyExpanded && alreadyExpanded == "true")
+                {
+                    targetElem.style.display = "none";
+                    element.setAttribute("expanded", "false")
+                }
+                else
+                {
+                    targetElem.style.display = "block";
+                    element.setAttribute("expanded", "true")
+                }
+            }
+        }
+    });
+
+    // Tab sections
     var tabElements = document.querySelectorAll("[" + tabContainerAttrbString + "]");
-    tabElements.forEach(function(element, index)
-    {
+    tabElements.forEach(function(element, index) {
         var tabElement = element;
         var buttons = tabElement.querySelectorAll("div." + tabSelectorClass + " > input");
         var pages = tabElement.querySelectorAll("div." + tabContentClass);
@@ -118,5 +174,18 @@ function initInteractiveFormatting(formatMapping)
         });
     });
 
-
+    // Tooltip sections
+    var tooltipElements = document.querySelectorAll("[" + tooltipAttrbString + "]");
+    tooltipElements.forEach(function(element, index) {
+        var targetElemId = element.getAttribute(tooltipAttrbString);
+        if (targetElemId !== null)
+        {
+            var targetElem = document.querySelector("#" + targetElemId);
+            if (targetElem !== null)
+            {
+                console.log(targetElem);
+                setupTooltipInteraction(element, targetElem, tooltipClass);
+            }
+        }
+    });
 }

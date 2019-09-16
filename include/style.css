@@ -33,7 +33,7 @@ h3
     display: block;
 }
 
-p, div.details > div.paragraph, div.code-paragraph {
+p, div.details > div.paragraph, div.code-paragraph{
     font-size: 16px;
     text-align: left;
     margin-top: 16px;
@@ -55,7 +55,6 @@ p em, div.paragraph em {
     width: 900px;
     margin: 20px auto 0;
     padding: 17px;
-    /*background-color: #f8f8f8;*/
 
     font-size: 44px;
     text-align: center;
@@ -77,7 +76,6 @@ p em, div.paragraph em {
     padding: 17px;
     width: 900px;
     color: #222222;
-    /*background-color: #f8f8f8;*/
 }
 
 a {
@@ -172,7 +170,7 @@ div.details[tabcontainer] div.tab-content.visible
 code, div.code {
     margin: 8px 0;
     border: 1px solid #888888;
-    padding: 8px 20px;
+    padding: 8px 18px;
     box-sizing: border-box;
     width: 100%;
     background-color: #eeeeee;
@@ -224,18 +222,15 @@ div.code-paragraph > div.details {
 }
 
 /* Tooltip formatting */
-div.tooltip-text {
+div.tooltip {
     position: absolute;
 
-    top: 100%;
-    left: 20px;
-    margin-top: 5px;
-
-    padding: 8px;
+    margin: 0px;
+    padding: 5px;
 
     font-family: 'Open Sans', sans-serif;
-    line-height: 16px;
-    font-size: 16px;
+    line-height: 14px;
+    font-size: 14px;
     text-align: left;
     box-sizing: border-box;
     border-radius: 5px;
@@ -244,37 +239,21 @@ div.tooltip-text {
 
     z-index: 100;
     display: block;
-    opacity: 0.0;
 
     pointer-events: none;
+
+    opacity: 0;
 
     transition-property: opacity;
     transition-duration: 0.2s;
     transition-timing-function: cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
 
-.has-tooltip:hover > div.tooltip-text {
-    opacity: 1.0;
-}
-
-.has-tooltip {
-    position: relative;
-}
-
-.code > .has-tooltip {
-    color: #222288;
+code [tooltip], .code [tooltip] {
+    margin: -1px -2px;
+    padding: 1px 2px;
+    background-color: rgba(0,0,0, 0.1);
     text-decoration: underline;
-}
-
-div.tooltip-text::after {
-    content: " ";
-    position: absolute;
-    top: 0%; /* At the bottom of the tooltip */
-    left: 20px;
-    margin-top: -10px;
-    border-width: 5px;
-    border-style: solid;
-    border-color:  transparent transparent rgb(70, 70, 70) transparent;
 }
 
 /* Formatting for protocol phase container */
@@ -411,4 +390,37 @@ div.collapsed > .short {
 
 div.collapsed > .details {
     display: none;
+}
+
+code [clickdetail], .code [clickdetail] {
+    margin: -1px -2px;
+    padding: 1px 2px;
+    background-color: rgba(0,0,0, 0.1);
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+.clickdetail
+{
+    display: none;
+    font-size: 14px;
+    padding: 7px;
+    font-family: 'Open Sans', sans-serif;
+
+    background-color: rgba(255, 255, 255, 1);
+    border: 1px solid #AAAAAA;
+
+    transition-property: background-color;
+    transition-duration: 1.5s;
+    transition-timing-function: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+code .clickdetail, .code .clickdetail {
+    margin: 5px -18px;
+    border-left: none;
+    border-right: none;
+}
+
+code > pre, .code > pre {
+    margin: 0;
 }
