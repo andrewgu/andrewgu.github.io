@@ -33,6 +33,10 @@ h3
     display: block;
 }
 
+.page-header code, .page-header div.code {
+    text-align: left;
+}
+
 p, div.details > div.paragraph, div.code-paragraph{
     font-size: 16px;
     text-align: left;
